@@ -1,0 +1,10 @@
+# 배포 env (compose 루트)
+.env.deploy
+
+# 세부 무시 규칙은 backend/.gitignore, frontend/.gitignore 참고
+# (여기엔 공통/에디터/OS 파일만)
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

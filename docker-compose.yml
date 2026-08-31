@@ -1,9 +1,8 @@
-# 헤이짜비 전체 스택 — MySQL + Django(gunicorn) + 프론트(nginx).
-# 전제: heyzzabi/ 와 heyzzabi-web/ 이 형제 디렉터리.
+# 헤이짜비 전체 스택 — MySQL + Django(gunicorn) + 프론트(nginx). (모노레포 루트)
 #
-#   cp .env.deploy.example .env.deploy   # 값 채우기 (특히 SECRET_KEY, DB 비번, OPENAI_API_KEY)
+#   cp .env.deploy.example .env.deploy   # 값 채우기 (SECRET_KEY, DB 비번, OPENAI_API_KEY)
 #   docker compose --env-file .env.deploy up -d --build
-#   docker compose --env-file .env.deploy exec backend python manage.py seed   # 최초 1회
+#   docker compose --env-file .env.deploy exec backend python manage.py seed --demo
 #
 #   접속: http://localhost:8080  (admin: http://localhost:8080/admin/)
 
@@ -23,7 +22,7 @@ services:
       retries: 20
 
   backend:
-    build: .
+    build: ./backend
     environment:
       DEBUG: "False"
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY 필요}
@@ -48,7 +47,7 @@ services:
       - "8000"
 
   frontend:
-    build: ../heyzzabi-web
+    build: ./frontend
     ports:
       - "${WEB_PORT:-8080}:80"
     depends_on:

@@ -121,13 +121,13 @@ python manage.py check_overdue      # cron / Windows 작업 스케줄러에 등�
 
 ## 배포 (Docker Compose)
 
-`heyzzabi/` 와 `heyzzabi-web/` 이 형제 디렉터리라는 전제. MySQL + Django(gunicorn) + 프론트(nginx).
+`docker-compose.yml` 은 **모노레포 루트**에 있다 (`../docker-compose.yml`).
 
 ```bash
-cd heyzzabi
+cd ..                                   # 모노레포 루트
 cp .env.deploy.example .env.deploy      # SECRET_KEY, DB_PASSWORD, OPENAI_API_KEY 등 채우기
 docker compose --env-file .env.deploy up -d --build
-docker compose --env-file .env.deploy exec backend python manage.py seed   # 최초 1회
+docker compose --env-file .env.deploy exec backend python manage.py seed --demo
 # → http://localhost:8080  (admin: /admin/)
 ```
 

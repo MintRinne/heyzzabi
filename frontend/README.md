@@ -1,6 +1,6 @@
 # 헤이짜비 프론트엔드 (React + Vite)
 
-Next.js 목업(`../heyzzabi2`)의 UI를 그대로 옮긴 것. 백엔드는 `../heyzzabi` (Django).
+Next.js 목업(별도 저장소 `heyzzabi2`)의 UI를 그대로 옮긴 것. 백엔드는 `../backend` (Django).
 
 ## 스택
 
@@ -34,7 +34,7 @@ npm install
 node node_modules/esbuild/install.js   # (npm 스크립트 차단 환경이면 1회 필요)
 
 # 백엔드 먼저 (다른 터미널)
-cd ../heyzzabi && .venv\Scripts\python manage.py runserver   # :8000
+cd ../backend && .venv\Scripts\python manage.py runserver   # :8000
 
 npm run dev        # http://localhost:5173
 ```
@@ -59,5 +59,5 @@ npm run dev        # http://localhost:5173
 
 ## 배포
 
-`docker build` → nginx 이미지. 백엔드 저장소의 `docker-compose.yml` 이 이 디렉터리를 `frontend` 서비스로 빌드한다
-(`../heyzzabi` 기준). nginx가 `/api`·`/admin` 을 백엔드로 프록시하므로 프로덕션에서도 같은 오리진.
+`docker build` → nginx 이미지. 모노레포 루트의 `docker-compose.yml` 이 `./frontend` 를 빌드한다.
+nginx가 `/api`·`/admin` 을 백엔드로 프록시하므로 프로덕션에서도 같은 오리진.
