@@ -41,8 +41,12 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "django_extensions",
-    # local
-    "core",
+    # local apps (도메인별 분리 — 팀 컨벤션)
+    "common",
+    "users",
+    "projects",
+    "meetings",
+    "tasks",
 ]
 
 MIDDLEWARE = [
@@ -78,7 +82,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "users.User"
 
 
 # ---------------------------------------------------------------------------
@@ -142,10 +146,10 @@ REST_FRAMEWORK = {
     # 프론트(목업)는 CSRF 토큰을 다루지 않고 SameSite=Lax 쿠키에만 의존했다 —
     # 그 보안 태세를 그대로 재현하기 위해 CSRF를 강제하지 않는 세션 인증을 쓴다.
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "core.authentication.CsrfExemptSessionAuthentication",
+        "common.authentication.CsrfExemptSessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "core.permissions.IsActiveAuthenticated",
+        "users.permissions.IsActiveAuthenticated",
     ],
     # 응답만 camelCase로 변환(mustChangePassword 등). 요청 본문은 프론트가 보내는 camelCase
     # 키를 뷰에서 그대로 읽는다(목업이 request.json()에서 camelCase를 읽던 것과 동일).
@@ -159,7 +163,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FormParser",
     ],
     "UNAUTHENTICATED_USER": None,
-    "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
+    "EXCEPTION_HANDLER": "common.exceptions.api_exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 

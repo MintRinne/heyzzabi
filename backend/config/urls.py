@@ -17,6 +17,10 @@ urlpatterns = [
     path("api/docs/swagger/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/docs/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
-    # 앱 엔드포인트 (프론트 계약 유지 위해 flat /api/* — core.urls 하나로 유지)
-    path("api/", include("core.urls")),
+    # 앱별 라우트 — 프론트 계약 유지 위해 전부 flat /api/ 아래 마운트 (per-app prefix 없음)
+    path("api/", include("users.urls")),
+    path("api/", include("projects.urls")),
+    path("api/", include("meetings.urls")),
+    path("api/", include("tasks.urls")),
+    path("api/", include("common.urls")),
 ]

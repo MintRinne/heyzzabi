@@ -5,7 +5,7 @@ AI 업무 자동화 포털 — Next.js 목업을 팀 스택으로 이식한 **�
 ```
 heyzzabi/
   agents/       heyzzabi_agents — AI 에이전트 (Django 무관 순수 파이썬 패키지)
-  backend/      Django 5.2 + DRF + MySQL   (모델 10개, API 42개; agents 를 -e 설치)
+  backend/      Django 5.2 + DRF + MySQL   (도메인별 앱: users/common/projects/meetings/tasks, API 42개; ai 를 -e 설치)
   frontend/     React 19 + Vite + React Router   (Next.js 목업 UI 이식)
   docker-compose.yml   MySQL + backend(gunicorn) + frontend(nginx)
 ```

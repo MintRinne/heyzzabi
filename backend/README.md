@@ -9,20 +9,26 @@ Next.js 목업(`../heyzzabi2`)을 우리 팀 스택으로 옮기는 새 프로�
 - MySQL (드라이버: PyMySQL — mysqlclient 대신 순수 파이썬)
 - 인증: DRF SessionAuthentication + 커스텀 `IsPM` 권한 (예정)
 
-## 구조
+## 구조 (도메인별 앱 — 팀 컨벤션)
 
 ```
-heyzzabi/
+backend/
   manage.py
-  config/            # 프로젝트 설정
-    __init__.py      # PyMySQL → MySQLdb 등록
-    settings.py      # .env 기반
-    urls.py
-  core/              # 도메인 앱 (모델 10개)
-    models.py
-    admin.py
-    migrations/0001_initial.py
+  config/            settings · urls(+ /api/schema, /api/docs/*) · wsgi/asgi
+  users/             User(커스텀) · permissions.py · views_auth.py · views_users.py
+  common/            Notification · ChatMessage · TimestampedUUIDModel(base)
+                     authentication.py · exceptions.py · notifications.py
+                     views_dashboard.py · views_ai.py · views_notifications.py
+                     management/commands/{seed,check_overdue}
+  projects/          Project · ProjectDocument · AssigneeRecommendation · ResearchReport · AIAgent
+  meetings/          MeetingNote · views.py(문서 파이프라인)
+  tasks/             Task · services.py(overdue) · views.py
 ```
+
+- `config/urls.py` 는 앱별 `urls.py` 를 **전부 `/api/` 아래 flat 마운트** (per-app prefix 없음)
+  → 프론트가 쓰는 경로(`/api/tasks`, `/api/auth/login`, `/api/projects/current` …)를 그대로 유지.
+- 크로스앱 FK 는 문자열 참조(`"projects.Project"`, `settings.AUTH_USER_MODEL`).
+- AI 로직은 `../ai` (`heyzzabi_ai`) — 뷰는 `from heyzzabi_ai import ...` 만.
 
 ## 도메인 모델 (10개)
 
