@@ -1,32 +1,41 @@
 """
-목업 src/lib/openai.ts 의 저수준 부분 이식.
+OpenAI 저수준 래퍼 (목업 src/lib/openai.ts 의 저수준 부분).
 
+- Django 무관. API 키는 인자로 받거나 OPENAI_API_KEY 환경변수에서 읽는다.
 - 지연 초기화: 실제 호출 시점에 클라이언트 생성 (키 없으면 AIConfigError).
 - with_retry: 429 / 5xx / 네트워크 오류만 백오프 재시도.
 """
 
 import json
+import os
 import time
 
-from django.conf import settings
 from openai import OpenAI
 
 
 class AIConfigError(Exception):
     def __init__(self):
-        super().__init__("OPENAI_API_KEY가 설정되지 않았습니다. .env에 키를 입력한 뒤 다시 시도해 주세요.")
+        super().__init__("OPENAI_API_KEY가 설정되지 않았습니다. 환경변수(.env)에 키를 입력한 뒤 다시 시도해 주세요.")
 
 
-_client = None
+_client: OpenAI | None = None
+
+
+def configure(api_key: str) -> None:
+    """호스트(Django 등)가 시작 시 키를 주입하고 싶을 때. 안 불러도 OPENAI_API_KEY 환경변수를 쓴다."""
+    global _client
+    if api_key:
+        _client = OpenAI(api_key=api_key)
 
 
 def get_client() -> OpenAI:
     global _client
-    key = settings.OPENAI_API_KEY
+    if _client is not None:
+        return _client
+    key = os.getenv("OPENAI_API_KEY")
     if not key:
         raise AIConfigError()
-    if _client is None:
-        _client = OpenAI(api_key=key)
+    _client = OpenAI(api_key=key)
     return _client
 
 
@@ -56,8 +65,7 @@ def chat_json(model, system, user, *, temperature=0.2, tools=None, messages=None
     if tools:
         kwargs["tools"] = tools
         kwargs.pop("response_format")
-    completion = with_retry(lambda: client.chat.completions.create(**kwargs))
-    return completion
+    return with_retry(lambda: client.chat.completions.create(**kwargs))
 
 
 def chat_text(model, system, user, *, temperature=None, messages=None):

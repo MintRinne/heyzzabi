@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from core.models import Project, ProjectDocument, Task
 from core.permissions import IsActiveAuthenticated, IsPM
 from core.serializers import ProjectDetailSerializer, ProjectSerializer
-from core.services.agent_config import parse_agent_config
+from heyzzabi_agents import parse_agent_config
 from core.services.overdue import check_and_notify_overdue_tasks
 
 
@@ -113,8 +113,8 @@ def reject_insights(request, project_id):
             "message": f"분석할 만한 반려 사유가 아직 부족합니다(현재 {len(reasons)}건, 최소 3건 필요).",
         })
 
-    from core.ai.agents import analyze_reject_patterns
-    from core.ai.client import AIConfigError
+    from heyzzabi_agents import analyze_reject_patterns
+    from heyzzabi_agents import AIConfigError
 
     try:
         result = analyze_reject_patterns(reasons)

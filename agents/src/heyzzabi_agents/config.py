@@ -1,8 +1,9 @@
 """
-목업 src/lib/agentConfig.ts 이식.
+에이전트 세부 설정 파싱 + clamp (목업 src/lib/agentConfig.ts 이식).
 
-Project.agent_config(JSON 문자열 또는 None)를 안전하게 파싱 + clamp.
-값이 없거나 깨져 있어도 항상 유효한 설정으로 폴백한다.
+Project.agent_config(JSON 문자열 또는 None)를 안전하게 파싱한다.
+값이 없거나 깨져 있어도 항상 유효한 설정으로 폴백하고, temperature/업무개수를
+화면 슬라이더와 별개로 서버에서도 안전 범위로 clamp한다(환각 방지).
 """
 
 import json
@@ -13,7 +14,6 @@ DEFAULT_AGENT_CONFIG = {
     "taskAssign": {"temperature": 0.1, "minTasks": 3, "maxTasks": 7},
 }
 
-# 환각 방지 원칙상 temperature는 화면 슬라이더와 별개로 서버에서도 이 범위로 clamp한다.
 _TEMP_MIN, _TEMP_MAX = 0.0, 0.3
 _COUNT_MIN, _COUNT_MAX = 1, 15
 

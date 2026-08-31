@@ -99,6 +99,8 @@ set DB_ENGINE=sqlite && python manage.py migrate
 | AI/기타 | `GET/POST chat` · `GET/POST research` · `DELETE research/<id>` · `POST documents/parse-file` · `POST integrations/slack` · `POST ai/{generate-tasks,parse-meeting,extract-tasks}`(레거시) |
 
 - AI 엔드포인트는 `OPENAI_API_KEY` 필요. 전부 **동기**(목업과 동일). gpt-4o / gpt-4o-mini.
+- **AI 로직은 `../agents`(`heyzzabi_agents`)에 있고 `requirements.txt` 의 `-e ../agents` 로 설치됨.**
+  뷰는 `from heyzzabi_agents import ...` 로 호출, DB 오케스트레이션(후보 조회·WBS 계산·저장)만 담당.
 - 파일 파싱: `.txt/.md`(내장), `.docx`(python-docx), `.pdf`(pdfplumber), `.hwp`(olefile, best-effort).
 
 ## 시드

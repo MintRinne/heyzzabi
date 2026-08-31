@@ -4,10 +4,14 @@ AI 업무 자동화 포털 — Next.js 목업을 팀 스택으로 이식한 **�
 
 ```
 heyzzabi/
-  backend/      Django 5.2 + DRF + MySQL   (모델 10개, API 42개, AI 에이전트 3종)
+  agents/       heyzzabi_agents — AI 에이전트 (Django 무관 순수 파이썬 패키지)
+  backend/      Django 5.2 + DRF + MySQL   (모델 10개, API 42개; agents 를 -e 설치)
   frontend/     React 19 + Vite + React Router   (Next.js 목업 UI 이식)
   docker-compose.yml   MySQL + backend(gunicorn) + frontend(nginx)
 ```
+
+- **AI 로직은 `agents/` 에만.** 백엔드는 `pip install -e ../agents` 로 쓰고, DB 오케스트레이션만 담당.
+  AI 담당은 `agents/` 만 보면 되고, `pytest` 로 Django 없이 테스트 가능.
 
 - 원본 목업: 별도 저장소 `heyzzabi2` (Next.js, 참조용)
 - 두 파트는 **HTTP `/api`** 로만 통신. 프론트는 `fetch("/api/...")` 를 그대로 쓰고, dev는 Vite 프록시가, 배포는 nginx가 백엔드로 넘긴다.
@@ -16,11 +20,11 @@ heyzzabi/
 
 ## 로컬 개발 (터미널 2개)
 
-**1) 백엔드**
+**1) 백엔드** (requirements 가 `-e ../agents` 로 AI 패키지도 같이 설치함)
 ```bash
 cd backend
 python -m venv .venv && .venv\Scripts\activate     # 최초 1회
-pip install -r requirements.txt                     # 최초 1회
+pip install -r requirements.txt                     # 최초 1회 (agents 패키지 포함)
 copy .env.example .env                              # SECRET_KEY / DB_PASSWORD / OPENAI_API_KEY 채우기
 # MySQL에서: CREATE DATABASE heyzzabi CHARACTER SET utf8mb4;
 python manage.py migrate                            # 최초 1회

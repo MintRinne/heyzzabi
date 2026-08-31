@@ -202,8 +202,8 @@ def recommend_assignees(request, task_id):
             "currentActiveTasks": active_counts.get(m.id, 0),
         })
 
-    from core.ai.agents import recommend_assignees as ai_recommend
-    from core.ai.client import AIConfigError
+    from heyzzabi_agents import recommend_assignees as ai_recommend
+    from heyzzabi_agents import AIConfigError
 
     try:
         recs = ai_recommend(

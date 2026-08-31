@@ -22,7 +22,9 @@ services:
       retries: 20
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     environment:
       DEBUG: "False"
       SECRET_KEY: ${SECRET_KEY:?SECRET_KEY 필요}
