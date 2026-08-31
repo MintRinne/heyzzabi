@@ -1,9 +1,11 @@
-# AI 에이전트 패키지 (모노레포 형제 디렉터리, editable) — openai 도 여기서 딸려옴
--e ../agents
+# AI 에이전트 패키지 (모노레포 형제 디렉터리, editable) — openai/instructor/pydantic/pyyaml 딸려옴
+-e ../ai
 
 Django>=5.2,<5.3
 djangorestframework>=3.16
 djangorestframework-camel-case>=1.4
+drf-spectacular>=0.28
+django-extensions>=3.2
 PyMySQL>=1.1.1
 python-dotenv>=1.0
 django-cors-headers>=4.6

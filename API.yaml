@@ -1,0 +1,673 @@
+openapi: 3.0.3
+info:
+  title: 헤이짜비 API
+  version: 1.0.0
+  description: 회의록 → 기획서 → 요구사항정의서 → 업무 배정 파이프라인 관리 API
+paths:
+  /api/ai/extract-tasks:
+    post:
+      operationId: aiExtractTasksCreate
+      description: 하드코딩 목업 — 실제 파이프라인은 documents/extract-tasks. AI 관리센터에서만 호출됨.
+      tags:
+      - ai
+      responses:
+        '200':
+          description: No response body
+  /api/ai/generate-tasks:
+    post:
+      operationId: aiGenerateTasksCreate
+      tags:
+      - ai
+      responses:
+        '200':
+          description: No response body
+  /api/ai/parse-meeting:
+    post:
+      operationId: aiParseMeetingCreate
+      tags:
+      - ai
+      responses:
+        '200':
+          description: No response body
+  /api/analytics:
+    get:
+      operationId: analyticsRetrieve
+      tags:
+      - analytics
+      responses:
+        '200':
+          description: No response body
+  /api/auth/dev-impersonate:
+    post:
+      operationId: authDevImpersonateCreate
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/dev-stop-impersonate:
+    post:
+      operationId: authDevStopImpersonateCreate
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/login:
+    post:
+      operationId: authLoginCreate
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/logout:
+    post:
+      operationId: authLogoutCreate
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/me:
+    get:
+      operationId: authMeRetrieve
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/onboarding:
+    post:
+      operationId: authOnboardingCreate
+      description: 최초 로그인 후 비밀번호 변경 + 프로필 채우기 — 세션의 본인만 대상.
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/chat:
+    get:
+      operationId: chatRetrieve
+      tags:
+      - chat
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: chatCreate
+      tags:
+      - chat
+      responses:
+        '200':
+          description: No response body
+  /api/dashboard:
+    get:
+      operationId: dashboardRetrieve
+      tags:
+      - dashboard
+      responses:
+        '200':
+          description: No response body
+  /api/documents/parse-file:
+    post:
+      operationId: documentsParseFileCreate
+      tags:
+      - documents
+      responses:
+        '200':
+          description: No response body
+  /api/integrations/slack:
+    post:
+      operationId: integrationsSlackCreate
+      tags:
+      - integrations
+      responses:
+        '200':
+          description: No response body
+  /api/notifications:
+    get:
+      operationId: notificationsRetrieve
+      tags:
+      - notifications
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/{notificationId}:
+    patch:
+      operationId: notificationsPartialUpdate
+      parameters:
+      - in: path
+        name: notificationId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - notifications
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/read-all:
+    patch:
+      operationId: notificationsReadAllPartialUpdate
+      tags:
+      - notifications
+      responses:
+        '200':
+          description: No response body
+  /api/projects:
+    get:
+      operationId: projectsRetrieve
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: projectsCreate
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}:
+    get:
+      operationId: projectsRetrieve2
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: projectsPartialUpdate
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents:
+    get:
+      operationId: projectsDocumentsRetrieve
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: projectsDocumentsCreate
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}:
+    patch:
+      operationId: projectsDocumentsPartialUpdate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: projectsDocumentsDestroy
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '204':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}/approve:
+    post:
+      operationId: projectsDocumentsApproveCreate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}/assign-tasks:
+    post:
+      operationId: projectsDocumentsAssignTasksCreate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}/extract-tasks:
+    post:
+      operationId: projectsDocumentsExtractTasksCreate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}/generate:
+    post:
+      operationId: projectsDocumentsGenerateCreate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}/reject:
+    post:
+      operationId: projectsDocumentsRejectCreate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/documents/{docId}/submit-review:
+    post:
+      operationId: projectsDocumentsSubmitReviewCreate
+      parameters:
+      - in: path
+        name: docId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/reject-insights:
+    post:
+      operationId: projectsRejectInsightsCreate
+      description: 반려 사유들을 모아 AI에게 반복 패턴/프롬프트 개선 제안을 받는다 (자동 반영 없음).
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/{projectId}/settings:
+    patch:
+      operationId: projectsSettingsPartialUpdate
+      parameters:
+      - in: path
+        name: projectId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/projects/current:
+    get:
+      operationId: projectsCurrentRetrieve
+      tags:
+      - projects
+      responses:
+        '200':
+          description: No response body
+  /api/research:
+    get:
+      operationId: researchRetrieve
+      tags:
+      - research
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: researchCreate
+      tags:
+      - research
+      responses:
+        '200':
+          description: No response body
+  /api/research/{reportId}:
+    delete:
+      operationId: researchDestroy
+      parameters:
+      - in: path
+        name: reportId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - research
+      responses:
+        '204':
+          description: No response body
+  /api/tasks:
+    get:
+      operationId: tasksRetrieve
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: tasksCreate
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: tasksPartialUpdate
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+  /api/tasks/{taskId}:
+    patch:
+      operationId: tasksPartialUpdate2
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: tasksDestroy
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      responses:
+        '204':
+          description: No response body
+  /api/tasks/{taskId}/approve:
+    post:
+      operationId: tasksApproveCreate
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+  /api/tasks/{taskId}/recommend-assignees:
+    post:
+      operationId: tasksRecommendAssigneesCreate
+      description: 칸반에서 담당자 드래그 배정 시 — 업무 1건에 대해 후보 최대 3명 추천 (저장 안 함, 이력만 남김).
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+  /api/tasks/{taskId}/reject:
+    post:
+      operationId: tasksRejectCreate
+      parameters:
+      - in: path
+        name: taskId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - tasks
+      responses:
+        '200':
+          description: No response body
+  /api/users:
+    get:
+      operationId: usersRetrieve
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: usersCreate
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/{userId}/change-password:
+    post:
+      operationId: usersChangePasswordCreate
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/{userId}/delete:
+    delete:
+      operationId: usersDeleteDestroy
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      responses:
+        '204':
+          description: No response body
+  /api/users/{userId}/password-reset:
+    post:
+      operationId: usersPasswordResetCreate
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/{userId}/profile:
+    get:
+      operationId: usersProfileRetrieve
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: usersProfilePartialUpdate
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/{userId}/role:
+    patch:
+      operationId: usersRolePartialUpdate
+      parameters:
+      - in: path
+        name: userId
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+components: {}

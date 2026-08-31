@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from core.models import AssigneeRecommendation, Project, ProjectDocument, Task, User
 from core.permissions import IsActiveAuthenticated, IsPM
 from core.serializers import ProjectDocumentSerializer, TaskSerializer
-from heyzzabi_agents import parse_agent_config
+from heyzzabi_ai import parse_agent_config
 from core.services.notify import notify_all_pms
 
 VALID_DOC_STATUS = {"DRAFT", "PENDING_REVIEW", "APPROVED", "REJECTED"}
@@ -139,8 +139,8 @@ def generate(request, project_id, doc_id):
         Project.objects.filter(id=project_id).values_list("agent_config", flat=True).first()
     )
 
-    from heyzzabi_agents import generate_proposal, generate_reqspec, past_case_insight
-    from heyzzabi_agents import AIConfigError
+    from heyzzabi_ai import generate_proposal, generate_reqspec, past_case_insight
+    from heyzzabi_ai import AIConfigError
 
     try:
         if doc_type == "proposal":
@@ -271,8 +271,8 @@ def extract_tasks(request, project_id, doc_id):
         Project.objects.filter(id=project_id).values_list("agent_config", flat=True).first()
     )["taskAssign"]
 
-    from heyzzabi_agents import extract_tasks as ai_extract
-    from heyzzabi_agents import AIConfigError
+    from heyzzabi_ai import extract_tasks as ai_extract
+    from heyzzabi_ai import AIConfigError
 
     try:
         tasks_data = ai_extract(doc.req_spec_content, cfg["minTasks"], cfg["maxTasks"], cfg["temperature"])
@@ -344,8 +344,8 @@ def assign_tasks(request, project_id, doc_id):
             "currentActiveTasks": active_counts.get(m.id, 0),
         })
 
-    from heyzzabi_agents import batch_assign
-    from heyzzabi_agents import AIConfigError
+    from heyzzabi_ai import batch_assign
+    from heyzzabi_ai import AIConfigError
 
     try:
         assignments = batch_assign(

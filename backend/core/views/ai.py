@@ -51,8 +51,8 @@ def chat(request):
     for m in members:
         m["id"] = str(m["id"])
 
-    from heyzzabi_agents import chat_answer
-    from heyzzabi_agents import AIConfigError
+    from heyzzabi_ai import chat_answer
+    from heyzzabi_ai import AIConfigError
 
     try:
         reply_text = chat_answer(
@@ -102,8 +102,8 @@ def research_collection(request):
         packet.append({"kind": "업무", "title": t.title,
                        "content": " / ".join(filter(None, bits)) or f"(상태: {t.status})"})
 
-    from heyzzabi_agents import deep_research
-    from heyzzabi_agents import AIConfigError
+    from heyzzabi_ai import deep_research
+    from heyzzabi_ai import AIConfigError
 
     try:
         result = deep_research(question, packet)
@@ -246,7 +246,7 @@ def legacy_generate_tasks(request):
     context_text = request.data.get("contextText")
     if not context_text:
         return Response({"error": "회의록 또는 기획서 컨텍스트가 제공되지 않았습니다."}, status=400)
-    from heyzzabi_agents import AIConfigError, chat_json, parse_json_content
+    from heyzzabi_ai import AIConfigError, chat_json, parse_json_content
 
     system = (
         "당신은 최상위급 PM이자 요구사항 분석가입니다. 제공된 컨텍스트만 사용해 실행 가능한 칸반 업무로 분해하세요.\n"
@@ -269,7 +269,7 @@ def legacy_parse_meeting(request):
     notes = request.data.get("notes")
     if not notes:
         return Response({"error": "회의록 내용이 없습니다."}, status=400)
-    from heyzzabi_agents import AIConfigError, chat_json, parse_json_content
+    from heyzzabi_ai import AIConfigError, chat_json, parse_json_content
 
     system = (
         "너는 유능한 기획자(PM)야. 회의록을 분석해 프로젝트 개요와 3~7개의 칸반 업무로 쪼개라.\n"

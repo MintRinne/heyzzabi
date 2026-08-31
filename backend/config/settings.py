@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     # 3rd party
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
+    "django_extensions",
     # local
     "core",
 ]
@@ -158,6 +160,17 @@ REST_FRAMEWORK = {
     ],
     "UNAUTHENTICATED_USER": None,
     "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# 팀 컨벤션: drf-spectacular 로 OpenAPI 3.0 생성 (/api/schema/, /api/docs/swagger/)
+# 루트 API.yaml 은 `python manage.py spectacular --file ../API.yaml` 스냅샷
+SPECTACULAR_SETTINGS = {
+    "TITLE": "헤이짜비 API",
+    "DESCRIPTION": "회의록 → 기획서 → 요구사항정의서 → 업무 배정 파이프라인 관리 API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "CAMELIZE_NAMES": True,
 }
 
 
