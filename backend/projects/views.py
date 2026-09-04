@@ -115,14 +115,13 @@ def reject_insights(request, project_id):
         })
 
     from heyzzabi_ai import analyze_reject_patterns
-    from heyzzabi_ai import AIConfigError
+
+    from common.ai_errors import ai_error_response
 
     try:
         result = analyze_reject_patterns(reasons)
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
     except Exception as e:  # noqa: BLE001
-        return Response({"success": False, "error": "반려 패턴 분석 실패: " + str(e)}, status=500)
+        return ai_error_response(e, action="반려 패턴 분석", extra={"success": False})
 
     return Response({
         "success": True, "insufficientData": False, "reasonCount": len(reasons),

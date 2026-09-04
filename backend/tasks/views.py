@@ -207,17 +207,16 @@ def recommend_assignees(request, task_id):
         })
 
     from heyzzabi_ai import recommend_assignees as ai_recommend
-    from heyzzabi_ai import AIConfigError
+
+    from common.ai_errors import ai_error_response
 
     try:
         recs = ai_recommend(
             {"title": task.title, "description": task.description},
             [{k: v for k, v in c.items() if k != "_user_id"} for c in candidates],
         )
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
     except Exception as e:  # noqa: BLE001
-        return Response({"error": "추천 생성 실패: " + str(e)}, status=500)
+        return ai_error_response(e, action="담당자 추천")
 
     by_index = {c["index"]: c for c in candidates}
     out = []

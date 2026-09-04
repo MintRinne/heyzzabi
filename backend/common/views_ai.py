@@ -60,7 +60,8 @@ def chat(request):
         m["id"] = str(m["id"])
 
     from heyzzabi_ai import chat_answer
-    from heyzzabi_ai import AIConfigError
+
+    from common.ai_errors import ai_error_response
 
     try:
         reply_text = chat_answer(
@@ -68,10 +69,8 @@ def chat(request):
             json.dumps(projects, ensure_ascii=False, default=str),
             json.dumps(members, ensure_ascii=False, default=str),
         )
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
-    except Exception:  # noqa: BLE001
-        return Response({"error": "Internal Server Error"}, status=500)
+    except Exception as e:  # noqa: BLE001
+        return ai_error_response(e, action="AI 어시스턴트 응답")
 
     ai_msg = ChatMessage.objects.create(role="ai", content=reply_text or "답변을 생성하지 못했습니다.")
     return Response({"reply": ChatMessageSerializer(ai_msg).data})
@@ -111,14 +110,13 @@ def research_collection(request):
                        "content": " / ".join(filter(None, bits)) or f"(상태: {t.status})"})
 
     from heyzzabi_ai import deep_research
-    from heyzzabi_ai import AIConfigError
+
+    from common.ai_errors import ai_error_response
 
     try:
         result = deep_research(question, packet)
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
     except Exception as e:  # noqa: BLE001
-        return Response({"error": str(e) or "리서치에 실패했습니다."}, status=500)
+        return ai_error_response(e, action="딥리서치")
 
     report = ResearchReport.objects.create(
         question=question, content=result["content"], degraded=result["degraded"],
@@ -254,7 +252,9 @@ def legacy_generate_tasks(request):
     context_text = request.data.get("contextText")
     if not context_text:
         return Response({"error": "회의록 또는 기획서 컨텍스트가 제공되지 않았습니다."}, status=400)
-    from heyzzabi_ai import AIConfigError, chat_json, parse_json_content
+    from heyzzabi_ai import chat_json, parse_json_content
+
+    from common.ai_errors import ai_error_response
 
     system = (
         "당신은 최상위급 PM이자 요구사항 분석가입니다. 제공된 컨텍스트만 사용해 실행 가능한 칸반 업무로 분해하세요.\n"
@@ -263,10 +263,8 @@ def legacy_generate_tasks(request):
     )
     try:
         parsed = parse_json_content(chat_json("gpt-4o", system, f"[컨텍스트]\n{context_text}", temperature=0.1))
-    except AIConfigError as e:
-        return Response({"success": False, "error": str(e)}, status=500)
     except Exception as e:  # noqa: BLE001
-        return Response({"success": False, "error": str(e)}, status=500)
+        return ai_error_response(e, action="업무 분해", extra={"success": False})
     arr = parsed.get("tasks") if isinstance(parsed.get("tasks"), list) else (parsed if isinstance(parsed, list) else [])
     return Response({"success": True, "data": arr})
 
@@ -277,7 +275,9 @@ def legacy_parse_meeting(request):
     notes = request.data.get("notes")
     if not notes:
         return Response({"error": "회의록 내용이 없습니다."}, status=400)
-    from heyzzabi_ai import AIConfigError, chat_json, parse_json_content
+    from heyzzabi_ai import chat_json, parse_json_content
+
+    from common.ai_errors import ai_error_response
 
     system = (
         "너는 유능한 기획자(PM)야. 회의록을 분석해 프로젝트 개요와 3~7개의 칸반 업무로 쪼개라.\n"
@@ -285,10 +285,8 @@ def legacy_parse_meeting(request):
     )
     try:
         parsed = parse_json_content(chat_json("gpt-4o-mini", system, f"회의록 내용:\n{notes}", temperature=0.2))
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=500)
     except Exception as e:  # noqa: BLE001
-        return Response({"error": str(e) or "AI 분석 중 오류가 발생했습니다."}, status=500)
+        return ai_error_response(e, action="회의록 분석")
     return Response(parsed)
 
 

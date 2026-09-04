@@ -145,8 +145,10 @@ def generate(request, project_id, doc_id):
     )
 
     from heyzzabi_ai import generate_proposal, generate_reqspec, past_case_insight
-    from heyzzabi_ai import AIConfigError
 
+    from common.ai_errors import ai_error_response
+
+    label = "기획서 생성" if doc_type == "proposal" else "요구사항정의서 생성"
     try:
         if doc_type == "proposal":
             if not doc.raw_content:
@@ -192,10 +194,8 @@ def generate(request, project_id, doc_id):
         doc.req_spec_reject_reason = None
         doc.save(update_fields=["req_spec_content", "req_spec_status", "req_spec_reject_reason", "updated_at"])
         return Response({"content": content, "status": result_status})
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
     except Exception as e:  # noqa: BLE001
-        return Response({"error": "AI 생성 실패: " + str(e)}, status=500)
+        return ai_error_response(e, action=label)
 
 
 @api_view(["POST"])
@@ -277,16 +277,15 @@ def extract_tasks(request, project_id, doc_id):
     )["taskAssign"]
 
     from heyzzabi_ai import extract_tasks as ai_extract
-    from heyzzabi_ai import AIConfigError
+
+    from common.ai_errors import ai_error_response
 
     try:
         tasks_data = ai_extract(doc.req_spec_content, cfg["minTasks"], cfg["maxTasks"], cfg["temperature"])
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
     except Exception as e:  # noqa: BLE001
-        return Response({"error": "업무 생성 실패: " + str(e)}, status=500)
+        return ai_error_response(e, action="업무 생성")
     if not tasks_data:
-        return Response({"error": "AI가 업무를 생성하지 못했습니다."}, status=500)
+        return Response({"error": "AI가 업무를 생성하지 못했습니다. 요구사항정의서 내용을 확인한 뒤 다시 시도해 주세요."}, status=502)
 
     existing = list(Task.objects.filter(source_document_id=str(doc_id)))
     stale = [t for t in existing if t.status != "BACKLOG"]
@@ -350,17 +349,16 @@ def assign_tasks(request, project_id, doc_id):
         })
 
     from heyzzabi_ai import batch_assign
-    from heyzzabi_ai import AIConfigError
+
+    from common.ai_errors import ai_error_response
 
     try:
         assignments = batch_assign(
             [{"taskIndex": i, "title": t.title, "description": t.description} for i, t in enumerate(tasks)],
             [{k: v for k, v in c.items() if k != "_user_id"} for c in candidates],
         )
-    except AIConfigError as e:
-        return Response({"error": str(e)}, status=400)
     except Exception as e:  # noqa: BLE001
-        return Response({"error": "배정 추천 생성 실패: " + str(e)}, status=500)
+        return ai_error_response(e, action="담당자 배정 추천")
 
     by_index = {c["index"]: c for c in candidates}
     assign_by_task = {a["taskIndex"]: a for a in assignments if "taskIndex" in a}

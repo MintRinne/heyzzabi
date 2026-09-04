@@ -199,6 +199,22 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
 
 # ---------------------------------------------------------------------------
+# 로깅 — AI 호출 실패의 '진짜 원인'은 사용자 응답이 아니라 여기로만 남는다
+# (common/ai_errors.py 의 logger 이름: "heyzzabi.ai")
+# ---------------------------------------------------------------------------
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {"simple": {"format": "[{asctime}] {levelname} {name}: {message}", "style": "{"}},
+    "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "simple"}},
+    "loggers": {
+        "heyzzabi": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "heyzzabi.ai": {"handlers": ["console"], "level": "INFO", "propagate": False},
+    },
+}
+
+
+# ---------------------------------------------------------------------------
 # 배포(DEBUG=False)일 때만 켜는 보안 헤더 — 이 블록은 파일 맨 끝에 둔다
 # (앞에서 SESSION_COOKIE_SECURE 등을 dev 기본값으로 설정하므로 여기서 덮어써야 한다)
 # ---------------------------------------------------------------------------
